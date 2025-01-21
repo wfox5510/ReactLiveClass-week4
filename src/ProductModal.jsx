@@ -5,7 +5,46 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 const API_BASE = import.meta.env.VITE_BASE_URL;
 const API_PATH = import.meta.env.VITE_API_PATH;
-
+const ModalCheckInput = ({ title, name, value, handleInputModal }) => {
+  return (
+    <div className="form-check">
+      <input
+        id={name}
+        name={name}
+        className="form-check-input"
+        type="checkbox"
+        onChange={handleInputModal}
+        checked={value === 1 ? true : false}
+      />
+      <label className="form-check-label" htmlFor={name}>
+        {title}
+      </label>
+    </div>
+  );
+};
+const ModalTextArea = ({
+  title,
+  name,
+  placeholder,
+  value,
+  handleInputModal,
+}) => {
+  return (
+    <>
+      <label htmlFor={name} className="form-label">
+        {title}
+      </label>
+      <textarea
+        id={name}
+        name={name}
+        className="form-control"
+        placeholder={placeholder}
+        value={value}
+        onChange={handleInputModal}
+      ></textarea>
+    </>
+  );
+};
 const ModalInput = ({
   title,
   name,
@@ -297,45 +336,30 @@ const ProductModal = ({
                 <hr />
 
                 <div className="mb-3">
-                  <label htmlFor="description" className="form-label">
-                    產品描述
-                  </label>
-                  <textarea
-                    id="description"
+                  <ModalTextArea
+                    title="產品描述"
                     name="description"
-                    className="form-control"
                     placeholder="請輸入產品描述"
                     value={tempProductData.description}
-                    onChange={handleInputModal}
-                  ></textarea>
+                    handleInputModal={handleInputModal}
+                  />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="content" className="form-label">
-                    說明內容
-                  </label>
-                  <textarea
-                    id="content"
+                  <ModalTextArea
+                    title="說明內容"
                     name="content"
-                    className="form-control"
                     placeholder="請輸入說明內容"
                     value={tempProductData.content}
-                    onChange={handleInputModal}
-                  ></textarea>
+                    handleInputModal={handleInputModal}
+                  />
                 </div>
                 <div className="mb-3">
-                  <div className="form-check">
-                    <input
-                      id="is_enabled"
-                      name="is_enabled"
-                      className="form-check-input"
-                      type="checkbox"
-                      onChange={handleInputModal}
-                      checked={tempProductData.is_enabled === 1 ? true : false}
-                    />
-                    <label className="form-check-label" htmlFor="is_enabled">
-                      是否啟用
-                    </label>
-                  </div>
+                  <ModalCheckInput
+                    title="是否啟用"
+                    name="is_enabled"
+                    handleInputModal={handleInputModal}
+                    value={tempProductData.is_enabled}
+                  />
                 </div>
               </div>
             </div>
