@@ -143,10 +143,10 @@ const ProductModal = ({
   //上傳/修改產品資料
 
   const handleModalBtn = () => {
-    isNewProduct ? postProjectData() : putProjectData();
+    isNewProduct ? postProductData() : putProductData();
   };
 
-  const postProjectData = async () => {
+  const postProductData = async () => {
     try {
       await axios.post(`${API_BASE}/api/${API_PATH}/admin/product`, {
         data: tempProductData,
@@ -159,7 +159,7 @@ const ProductModal = ({
     }
   };
 
-  const putProjectData = async () => {
+  const putProductData = async () => {
     try {
       await axios.put(
         `${API_BASE}/api/${API_PATH}/admin/product/${tempProductData.id}`,
@@ -179,7 +179,20 @@ const ProductModal = ({
     const productModal = Modal.getInstance(productModalRef.current);
     productModal.hide();
   };
-
+  //上傳圖片
+  const handleUploadImg = async (e) => {
+    const {files} = e.target;
+    try {
+      const res = await axios.post(`${API_BASE}/api/${API_PATH}/admin/upload`,files);
+      const {imageUrl} = res.data;
+      setTempProductData({
+        ...tempProductData,
+        imageUrl: imageUrl,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div
       ref={productModalRef}
@@ -207,6 +220,16 @@ const ProductModal = ({
               <div className="col-sm-4">
                 <div className="mb-2">
                   <div className="mb-3">
+                    <label htmlFor="uploadImg" className="form-label">
+                      上傳圖片
+                    </label>
+                    <input
+                      type="file"
+                      id="uploadImg"
+                      name="file-to-upload"
+                      className="mb-3"
+                      onChange={handleUploadImg}
+                    />
                     <label htmlFor="imageUrl" className="form-label">
                       輸入圖片網址
                     </label>

@@ -70,9 +70,16 @@ function App() {
 
   //取得產品資料
   const [productData, setProductData] = useState(null);
-
+  const totalPage = useRef(0);
+  const currentPage = useRef(1);
+  // useEffect(()=>{
+  //   console.log(productData);
+  // },[productData]);
   const getProduct = async () => {
-    const res = await axios.get(`${API_BASE}/api/${API_PATH}/admin/products`);
+    const res = await axios.get(
+      `${API_BASE}/api/${API_PATH}/admin/products?page=${currentPage.current}`
+    );
+    totalPage.current = res.data.pagination.total_pages;
     setProductData(res.data.products);
   };
 
@@ -203,6 +210,62 @@ function App() {
                 )}
               </tbody>
             </table>
+            <nav aria-label="Page navigation">
+              <ul className="pagination justify-content-center">
+                <li className="page-item">
+                  <a
+                    className={
+                      currentPage.current === 1
+                        ? "disabled page-link"
+                        : "page-link"
+                    }
+                    onClick={() => {
+                      currentPage.current -= 1;
+                      getProduct();
+                    }}
+                    href="#"
+                  >
+                    上一頁
+                  </a>
+                </li>
+                {Array.from({ length: totalPage.current }).map((_, index) => {
+                  return (
+                    <li className="page-item" key={index}>
+                      <a
+                        className={
+                          currentPage.current === index + 1
+                            ? "page-link active"
+                            : "page-link"
+                        }
+                        onClick={() => {
+                          currentPage.current = index + 1;
+                          getProduct();
+                        }}
+                        href="#"
+                      >
+                        {index + 1}
+                      </a>
+                    </li>
+                  );
+                })}
+                <li className="page-item">
+                  <a
+                    className={
+                      currentPage.current === totalPage.current
+                        ? "disabled page-link"
+                        : "page-link"
+                    }
+                    onClick={() => {
+                      currentPage.current += 1;
+                      getProduct();
+                    }}
+                    href="#"
+                  >
+                    下一頁
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       ) : (
