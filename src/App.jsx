@@ -39,48 +39,27 @@ function App() {
     try {
       const res = await axios.post(`${API_BASE}/api/user/check`);
       if (res.data.success) {
+        await getProduct();
         setIsAuth(true);
-        getProduct();
       }
     } catch (err) {
       alert(err.response.data.message);
     }
   };
-  // // 登入頁面操作邏輯
-  // const handleInputChange = (e) => {
-  //   const { id, value } = e.target;
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [id]: value,
-  //   }));
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await axios.post(`${API_BASE}/admin/signin`, formData);
-  //     const { token, expired } = response.data;
-  //     document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
-  //     axios.defaults.headers.common.Authorization = token;
-  //     setIsAuth(true);
-  //     getProduct();
-  //   } catch (error) {
-  //     alert("登入失敗: " + error.response.data.message);
-  //   }
-  // };
 
   //取得產品資料
   const [productData, setProductData] = useState(null);
-  const totalPage = useRef(0);
-  const currentPage = useRef(1);
-  // useEffect(()=>{
-  //   console.log(productData);
-  // },[productData]);
-  const getProduct = async () => {
+  const [paginationData, setPaginationData] = useState(null);
+
+  useEffect(() => {
+    console.log(paginationData);
+  }, [paginationData]);
+
+  const getProduct = async (page=1) => {
     const res = await axios.get(
-      `${API_BASE}/api/${API_PATH}/admin/products?page=${currentPage.current}`
+      `${API_BASE}/api/${API_PATH}/admin/products?page=${page}`
     );
-    totalPage.current = res.data.pagination.total_pages;
+    setPaginationData(res.data.pagination);
     setProductData(res.data.products);
   };
 
@@ -216,49 +195,48 @@ function App() {
                 <li className="page-item">
                   <a
                     className={
-                      currentPage.current === 1
+                      !paginationData.has_pre
                         ? "disabled page-link"
                         : "page-link"
                     }
                     onClick={() => {
-                      currentPage.current -= 1;
-                      getProduct();
+                      getProduct(paginationData.current_page - 1);
                     }}
                     href="#"
                   >
                     上一頁
                   </a>
                 </li>
-                {Array.from({ length: totalPage.current }).map((_, index) => {
-                  return (
-                    <li className="page-item" key={index}>
-                      <a
-                        className={
-                          currentPage.current === index + 1
-                            ? "page-link active"
-                            : "page-link"
-                        }
-                        onClick={() => {
-                          currentPage.current = index + 1;
-                          getProduct();
-                        }}
-                        href="#"
-                      >
-                        {index + 1}
-                      </a>
-                    </li>
-                  );
-                })}
+                {Array.from({ length: paginationData.total_pages }).map(
+                  (_, index) => {
+                    return (
+                      <li className="page-item" key={index}>
+                        <a
+                          className={
+                            paginationData.current_page === index + 1
+                              ? "page-link active"
+                              : "page-link"
+                          }
+                          onClick={() => {
+                            getProduct(index + 1);
+                          }}
+                          href="#"
+                        >
+                          {index + 1}
+                        </a>
+                      </li>
+                    );
+                  }
+                )}
                 <li className="page-item">
                   <a
                     className={
-                      currentPage.current === totalPage.current
+                      !paginationData.has_next
                         ? "disabled page-link"
                         : "page-link"
                     }
                     onClick={() => {
-                      currentPage.current += 1;
-                      getProduct();
+                      getProduct(paginationData.current_page + 1);
                     }}
                     href="#"
                   >

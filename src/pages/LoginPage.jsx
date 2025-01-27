@@ -26,8 +26,8 @@ const LoginPage = ({ setIsAuth, getProduct }) => {
       const { token, expired } = response.data;
       document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
       axios.defaults.headers.common.Authorization = token;
+      await getProduct();
       setIsAuth(true);
-      getProduct();
     } catch (error) {
       alert("登入失敗: " + error);
     }
