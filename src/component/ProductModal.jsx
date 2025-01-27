@@ -1,7 +1,7 @@
 import "./ProductModal.css";
 import axios from "axios";
 import { Modal } from "bootstrap";
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 const API_BASE = import.meta.env.VITE_BASE_URL;
 const API_PATH = import.meta.env.VITE_API_PATH;

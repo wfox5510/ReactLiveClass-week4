@@ -3,16 +3,17 @@ import "./App.css";
 import axios from "axios";
 import { Modal } from "bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import ProductModal from "./ProductModal";
+import ProductModal from "./component/ProductModal";
+import LoginPage from "./pages/LoginPage";
 
 const API_BASE = import.meta.env.VITE_BASE_URL;
 const API_PATH = import.meta.env.VITE_API_PATH;
 
 function App() {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
+  // const [formData, setFormData] = useState({
+  //   username: "",
+  //   password: "",
+  // });
   const productModalRef = useRef();
   const [isAuth, setIsAuth] = useState(false);
   // const productModalRef = useRef(null); 有需要嘛?差別在那，寫寫看確認一下
@@ -45,28 +46,28 @@ function App() {
       alert(err.response.data.message);
     }
   };
-  // 登入頁面操作邏輯
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
+  // // 登入頁面操作邏輯
+  // const handleInputChange = (e) => {
+  //   const { id, value } = e.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [id]: value,
+  //   }));
+  // };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(`${API_BASE}/admin/signin`, formData);
-      const { token, expired } = response.data;
-      document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
-      axios.defaults.headers.common.Authorization = token;
-      setIsAuth(true);
-      getProduct();
-    } catch (error) {
-      alert("登入失敗: " + error.response.data.message);
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await axios.post(`${API_BASE}/admin/signin`, formData);
+  //     const { token, expired } = response.data;
+  //     document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
+  //     axios.defaults.headers.common.Authorization = token;
+  //     setIsAuth(true);
+  //     getProduct();
+  //   } catch (error) {
+  //     alert("登入失敗: " + error.response.data.message);
+  //   }
+  // };
 
   //取得產品資料
   const [productData, setProductData] = useState(null);
@@ -269,47 +270,7 @@ function App() {
           </div>
         </div>
       ) : (
-        <div className="container login">
-          <div className="row justify-content-center">
-            <h1 className="h3 mb-3 font-weight-normal">請先登入</h1>
-            <div className="col-8">
-              <form id="form" className="form-signin" onSubmit={handleSubmit}>
-                <div className="form-floating mb-3">
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="username"
-                    placeholder="name@example.com"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    required
-                    autoFocus
-                  />
-                  <label htmlFor="username">Email address</label>
-                </div>
-                <div className="form-floating">
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  <label htmlFor="password">Password</label>
-                </div>
-                <button
-                  className="btn btn-lg btn-primary w-100 mt-3"
-                  type="submit"
-                >
-                  登入
-                </button>
-              </form>
-            </div>
-          </div>
-          <p className="mt-5 mb-3 text-muted">&copy; 2024~∞ - 六角學院</p>
-        </div>
+        <LoginPage setIsAuth={setIsAuth} getProduct={getProduct} />
       )}
       <ProductModal
         tempProductData={tempProductData}
