@@ -5,7 +5,7 @@ import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 const API_BASE = import.meta.env.VITE_BASE_URL;
 
-const LoginPage = ({ setIsAuth, getProduct }) => {
+const LoginPage = ({ setIsAuth }) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -26,7 +26,7 @@ const LoginPage = ({ setIsAuth, getProduct }) => {
       const { token, expired } = response.data;
       document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
       axios.defaults.headers.common.Authorization = token;
-      await getProduct();
+      //await getProduct();
       setIsAuth(true);
     } catch (error) {
       alert("登入失敗: " + error);
